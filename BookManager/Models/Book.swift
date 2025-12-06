@@ -11,8 +11,12 @@ struct Book: Identifiable {
     let id: UUID = UUID()
     var title: String
     var author: String
-    var coverImage: String = ""
+    var coverImage: String = "default_book"
     var detail: String
     
-    
+    var review: String = ""
+    var status: ReadingStatus = .unknown
+    var rating: Int = 0
+    var genre: Genre = .unknown
 }
+    

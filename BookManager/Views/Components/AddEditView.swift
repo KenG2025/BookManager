@@ -16,31 +16,65 @@ struct AddEditView: View {
         bookToEdit.title.isEmpty
     }
     
-    private var titleText: String
+    @State private var titleText: String
     
     init(bookToEdit: Binding<Book>){
-        
         self._bookToEdit = bookToEdit
         self._workingBook = .init(initialValue: bookToEdit.wrappedValue)
-        self.titleText = bookToEdit.wrappedValue.title.isEmpty ? "Add Book:" : "Edit Book:"
+        self._titleText = State(initialValue: bookToEdit.wrappedValue.title.isEmpty ? "Add Book:" : "Edit Book:")
     }
     
     var body: some View {
         
         NavigationStack {
             Form {
-                TextField("Title", text: $workingBook.title)
-                TextField("Author", text: $workingBook.author)
-                TextEditor(text: $workingBook.detail)
-                    .frame(minHeight: 150)
-            }
-            .navigationBarTitle("Add Book")
+                // Section creates a "white globe" around all fields.
+                // Use divide fields.
+                Section(header: Text("Book Details")){
+                    // A plain text field
+                    TextField("Title", text: $workingBook.title)
+                    TextField("Author", text: $workingBook.author)
+                    Picker("Genre", selection: $workingBook.genre){
+                        ForEach(Genre.allCases, id: \.self) {
+                            genre in Text(genre.rawValue).tag(genre)
+                        }
+                    }
+                    
+                    TextEditor(text: $workingBook.detail)
+                        .frame(minHeight: 150)
+                }//END Section
+                
+                Section(header: Text("My Review")){
+                    Picker("Rating", selection: $workingBook.rating){
+                        // Special base case
+//                        Text("No rating").tag(0)
+//                        Text("1").tag(0)
+//                        Text("2").tag(0)
+//                        Text("3").tag(0)
+//                        Text("4").tag(0)
+//                        Text("5").tag(0)
+                        
+                        ForEach(1...5, id: \.self){
+                            rating in Text("\(rating)").tag(rating)
+                        }
+                    }
+                }//END Section
+                    Picker("Readig Stauts", selection: $workingBook.status){
+                        //Enums have a specieal property 'allCases'
+                        ForEach(ReadingStatus.allCases, id: \.self) {
+                            status in  Text(status.rawValue).tag(status)
+                        }//END ForEach
+                    }//END Picker
+                    TextEditor(text: $workingBook.review)
+                        .frame(height: 150)
+            }//END Form
+            .navigationBarTitle(titleText)
             .toolbar{
                 ToolbarItem(placement: .confirmationAction){
                     Button("Save"){
                         self.$bookToEdit.wrappedValue = self.workingBook
                         dismiss()
-                    }.disabled(bookToEdit.title.isEmpty)
+                    }.disabled(workingBook.title.isEmpty)
                 }
             }
         }
