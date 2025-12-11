@@ -1,21 +1,19 @@
 //
-//  ContentView.swift
+//  BookListView.swift
 //  BookManager
 //
-//  Created by Ken Gonzalez on 11/22/25.
+//  Created by Ken Gonzalez on 12/6/25.
 //
 
 import SwiftUI
-import SwiftData
 
-struct ContentView: View {
-    @State var books = getBooks()
+struct BookListView: View {
+    @Binding var books: [Book]
     @State var showAddBookSheet: Bool = false
     @State var newBook = Book(title: "", author: "",detail: "")
     
     var body: some View {
         NavigationStack{
-            
             
             List($books, id: \.self.id) {
                 bookInList in NavigationLink(destination: DetailView(book: bookInList)){
@@ -34,5 +32,6 @@ struct ContentView: View {
                 AddEditView(bookToEdit: $newBook)
         }//END: content
         }//END: NavigationStack
-    }//}END: body
-}//END: struct
+        
+    }
+}

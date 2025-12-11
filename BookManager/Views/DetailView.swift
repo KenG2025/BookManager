@@ -32,25 +32,30 @@ struct DetailView: View {
                         }//END: VStack
                         
                     }//END: HStack
-                    HStack{
-                        if (book.status != .unknown) {
-                            CustomCapsule(text: book.status.rawValue, color: .secondary)
+                    
+                    VStack(alignment: .leading, spacing: 15){
+                        HStack{
+                            if (book.status != .unknown) {
+                                CustomCapsule(text: book.status.rawValue, color: .secondary)
+                            }
+                            if (book.status != .unknown) {
+                                CustomCapsule(text: book.genre.rawValue, color: .secondary)
+                            }
+                            
+                            Spacer()
+                            
+                            FavoritesToggle(isFavorite: $book.isFavoritee)
                         }
-                        if (book.status != .unknown) {
-                            CustomCapsule(text: book.genre.rawValue, color: .secondary)
+                        Text(book.detail)
+                            .padding(.horizontal, 20)
+                        if (book.rating == 0) {
+                            Text("Not yet rated.")
+                        }else{
+                            Text("Rating: \(book.rating)\(book.rating == 1 ? "star" : "stars")")
                         }
-                        
-                        
+                        Text("My Review: \(book.review)")
                     }
-                    Text(book.detail)
-                        .padding(.horizontal, 20)
-                    if (book.rating == 0) {
-                        Text("Not yet rated.")
-                    }else{
-                        Text("Rating: \(book.rating)\(book.rating == 1 ? "star" : "stars")")
-                    }
-                    Text("My Review: \(book.review)")
-  
+                    .padding(.horizontal, 20)
                     .navigationBarItems(trailing: Button("Edit"){
                         showEditBookSheet.toggle()})
                     .sheet(isPresented: $showEditBookSheet){
