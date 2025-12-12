@@ -11,7 +11,7 @@ struct Book: Identifiable {
     let id: UUID = UUID()
     var title: String
     var author: String
-    var coverImage: String = "default_book"
+    var coverImage: String = "Default_Book icon"
     var detail: String
     
     var review: String = ""

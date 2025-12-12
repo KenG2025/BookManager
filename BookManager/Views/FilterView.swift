@@ -16,6 +16,16 @@ struct FilterView: View {
 
     @Environment(\.dismiss) var dismiss
     
+
+    init(selecttedGenre: Binding<Genre?>, selecttedStatus: Binding<ReadingStatus?>){
+        self._selecttedGenre = selecttedGenre
+        self._workingSelectedGenre = .init(initialValue: selecttedGenre.wrappedValue)
+        
+        self._selecttedStatus = selecttedStatus
+        self._workingSelectedStatus = .init(initialValue: selecttedStatus.wrappedValue)
+    }
+    
+    
     var body: some View {
         NavigationStack{
             Form{
@@ -48,6 +58,8 @@ struct FilterView: View {
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Clear"){
+                        selecttedGenre = nil
+                        selecttedStatus = nil
                         dismiss()
                     }
                 }

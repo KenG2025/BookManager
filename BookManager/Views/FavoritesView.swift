@@ -9,16 +9,18 @@ import SwiftUI
 
 struct FavoritesView: View {
     
+    @AppStorage(SETTINGS_GRID_COLUMNS) var gridColumns: Int = 2
+    
     @Binding var books: [Book]
     @State private var isFilterSheetPresented: Bool = false
-    @State var selecttedGenre: Genre = .unknown
-    @State var selecttedStatus: ReadingStatus = .unknown
+    @State var selecttedGenre: Genre?
+    @State var selecttedStatus: ReadingStatus?
     
-    let gridLayout = [
-        GridItem(.flexible()),
-        GridItem(.flexible()),
-        GridItem(.flexible()),
-    ]
+    var gridLayout: [GridItem] {
+        Array(repeating: GridItem(.flexible()), count: gridColumns)
+    }
+    
+  
     //Compound Variables -> as soon as books binding variable changes the new variable will compute itself to match the state.
     private var favoriteBooks: [Binding<Book>]{
         $books.filter { $0.wrappedValue.isFavoritee
@@ -31,30 +33,38 @@ struct FavoritesView: View {
     var body: some View {
         NavigationStack{
             ScrollView {
-                LazyVGrid(columns: gridLayout) {
-                    ForEach(favoriteBooks, id: \.id) { book in
-                        NavigationLink(destination: DetailView(book: book)){
-                            StoryCardView(book: book)
+                HStack{
+                    if(selecttedGenre != nil){
+                        Text("Genre: \(selecttedGenre!.rawValue)")
+                    }
+                    if(selecttedGenre != nil){
+                        Text("Status: \(selecttedStatus!.rawValue)")
+                    }
+                    LazyVGrid(columns: gridLayout) {
+                        ForEach(favoriteBooks, id: \.id) { book in
+                            NavigationLink(destination: DetailView(book: book)){
+                                StoryCardView(book: book)
+                            }
+                        }
+                        
+                    }
+                    .padding(.horizontal)
+                }
+                .navigationBarTitle("My Favorite Books")
+                .toolbar{
+                    ToolbarItem(placement: .navigationBarLeading) {
+                        Button(action: {isFilterSheetPresented.toggle()}){
+                            Image(systemName: "line.horizontal.3.decrease.circle")
                         }
                     }
-                    
                 }
-                .padding(.horizontal)
-            }
-            .navigationBarTitle("My Favorite Books")
-            .toolbar{
-                ToolbarItem(placement: .navigationBarLeading) {
-                    Button(action: {isFilterSheetPresented.toggle()}){
-                        Image(systemName: "line.horizontal.3.decrease.circle")
-                    }
+                .sheet(isPresented: $isFilterSheetPresented){
+                    FilterView(selecttedGenre: $selecttedGenre, selecttedStatus: $selecttedStatus)
                 }
             }
-            .sheet(isPresented: $isFilterSheetPresented){
-                FilterView(selecttedGenre: $selecttedGenre, selecttedStatus: $selecttedStatus)
-            }
+            
         }
-        
     }
+    
+    
 }
-
-
