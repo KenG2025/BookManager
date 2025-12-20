@@ -6,77 +6,71 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct AddEditView: View {
-    @Binding var bookToEdit: Book
-    @State var workingBook: Book
+    
+    @StateObject private var viewModel: AddEditViewModel
+    
     @Environment(\.dismiss) var dismiss
+    @Environment(\.modelContext) private var modelContext
     
-    private var isNewBook: Bool{
-        bookToEdit.title.isEmpty
+    // This is ran only on creation
+    init(book: PersistentBook? = nil){
+       _viewModel = StateObject(
+            wrappedValue:
+                AddEditViewModel(book: book))
     }
-    
-    @State private var titleText: String
-    
-    init(bookToEdit: Binding<Book>){
-        self._bookToEdit = bookToEdit
-        self._workingBook = .init(initialValue: bookToEdit.wrappedValue)
-        self._titleText = State(initialValue: bookToEdit.wrappedValue.title.isEmpty ? "Add Book:" : "Edit Book:")
-    }
-    
     var body: some View {
-        
-        NavigationStack {
-            Form {
-                // Section creates a "white globe" around all fields.
-                // Use divide fields.
+        NavigationStack{
+            Form{
+                Section(header: Text("Book Cover")){
+                    ImageField(image: $viewModel.cover)
+                }
+                
+               // Section creates a "white glove around all input fields
+                // Uses divide fields
                 Section(header: Text("Book Details")){
-                    // A plain text field
-                    TextField("Title", text: $workingBook.title)
-                    TextField("Author", text: $workingBook.author)
-                    Picker("Genre", selection: $workingBook.genre){
+                    // a plain text field
+                    TextField("Title of the book", text: $viewModel.title)
+                    TextField("Author", text: $viewModel.author)
+                    Picker("Genre", selection: $viewModel.genre){
                         ForEach(Genre.allCases, id: \.self) {
                             genre in Text(genre.rawValue).tag(genre)
                         }
                     }
-                    
-                    TextEditor(text: $workingBook.detail)
-                        .frame(minHeight: 150)
-                }//END Section
-                
+                    TextEditor(text: $viewModel.summary)
+                        .frame(height: 150)
+                }
                 Section(header: Text("My Review")){
-                    Picker("Rating", selection: $workingBook.rating){
-                        // Special base case
-//                        Text("No rating").tag(0)
-//                        Text("1").tag(0)
-//                        Text("2").tag(0)
-//                        Text("3").tag(0)
-//                        Text("4").tag(0)
-//                        Text("5").tag(0)
-                        
-                        ForEach(1...5, id: \.self){
-                            rating in Text("\(rating)").tag(rating)
+                    Picker("Rating", selection: $viewModel.rating){
+                        Text("No Rating").tag(0 as Int)
+                        ForEach(1...5, id: \.self){rating in
+                            Text("\(rating)").tag(rating as Int)
                         }
                     }
-                }//END Section
-                    Picker("Readig Stauts", selection: $workingBook.status){
-                        //Enums have a specieal property 'allCases'
-                        ForEach(ReadingStatus.allCases, id: \.self) {
-                            status in  Text(status.rawValue).tag(status)
-                        }//END ForEach
-                    }//END Picker
-                    TextEditor(text: $workingBook.review)
+                    Picker("Reading Status", selection: $viewModel.status){
+                        //Enums hace a special property 'allCases'
+                        ForEach(ReadingStatus.allCases, id: \.self){status in
+                            Text(status.rawValue).tag(status)
+                        }
+                    }
+                    TextEditor(text: $viewModel.review)
                         .frame(height: 150)
-            }//END Form
-            .navigationBarTitle(titleText)
-            .toolbar{
-                ToolbarItem(placement: .confirmationAction){
-                    Button("Save"){
-                        self.$bookToEdit.wrappedValue = self.workingBook
-                        dismiss()
-                    }.disabled(workingBook.title.isEmpty)
+                }
+            }.navigationBarTitle(viewModel.getTitleText())
+                .toolbar{
+                    ToolbarItem(placement: .confirmationAction){
+                        Button("Save Book"){
+                            viewModel.save(modelContext: modelContext)
+                            
+                            
+                            dismiss()
+                        }.disabled(!viewModel.hasUnsavedChanges)
+        
                 }
             }
+            
         }
         
     }

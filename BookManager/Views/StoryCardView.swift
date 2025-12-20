@@ -7,10 +7,10 @@
 
 import SwiftUI
 
-import SwiftUI
+
 
 struct StoryCardView: View {
-    @Binding var book: Book
+   let book: PersistentBook
     
     var body: some View {
         VStack() {
@@ -47,9 +47,9 @@ struct StoryCardView: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(
-            Image(book.coverImage)
-                .resizable()
-                .scaledToFill().opacity(0.8)
+//            //Image(book.coverImage)
+//                .resizable()
+//                .scaledToFill().opacity(0.8)
         )
         .aspectRatio(1, contentMode: .fit)
         .cornerRadius(12)

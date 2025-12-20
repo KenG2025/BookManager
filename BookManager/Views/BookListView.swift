@@ -6,16 +6,17 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct BookListView: View {
-    @Binding var books: [Book]
+    @Query var books: [PersistentBook]
     @State var showAddBookSheet: Bool = false
     @State var newBook = Book(title: "", author: "",detail: "")
     
     var body: some View {
         NavigationStack{
             
-            List($books, id: \.self.id) {
+            List(books, id: \.self.id) {
                 bookInList in NavigationLink(destination: DetailView(book: bookInList)){
                     BookListItem(book: bookInList)
                 }
@@ -23,13 +24,12 @@ struct BookListView: View {
             .navigationBarTitle("Book Manager")
             .navigationBarItems(trailing: Button("Add"){showAddBookSheet.toggle()})
             .sheet(isPresented: $showAddBookSheet){
-                if(newBook.title.isEmpty){
-                    books.append(newBook)
-                }//END: if
-                newBook = Book(title: "", author: "",detail: "")
+               // if(newBook.title.isEmpty){
+                 //   books.append(newBook)
+               // }//END: if
         }
             content:{
-                AddEditView(bookToEdit: $newBook)
+                AddEditView()
         }//END: content
         }//END: NavigationStack
         

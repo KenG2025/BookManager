@@ -6,26 +6,31 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct FavoritesView: View {
     
     @AppStorage(SETTINGS_GRID_COLUMNS) var gridColumns: Int = 2
     
-    @Binding var books: [Book]
+    @Query var books: [PersistentBook]
     @State private var isFilterSheetPresented: Bool = false
-    @State var selecttedGenre: Genre?
-    @State var selecttedStatus: ReadingStatus?
+    @State var selectedGenre: Genre?
+    @State var selectedStatus: ReadingStatus?
     
     var gridLayout: [GridItem] {
         Array(repeating: GridItem(.flexible()), count: gridColumns)
     }
     
-  
+//    let gridLayout = [
+//        GridItem(.flexible()),
+//        GridItem(.flexible()),
+//        GridItem(.flexible()),
+//    ]
     //Compound Variables -> as soon as books binding variable changes the new variable will compute itself to match the state.
-    private var favoriteBooks: [Binding<Book>]{
-        $books.filter { $0.wrappedValue.isFavoritee
-            && (selecttedGenre == nil || $0.wrappedValue.genre == selecttedGenre)
-            && (selecttedStatus == nil || $0.wrappedValue.status == selecttedStatus)
+    private var favoriteBooks: [PersistentBook]{
+        books.filter { $0.isFavorite
+            && (selectedGenre == nil || $0.genre == selectedGenre)
+            && (selectedStatus == nil || $0.status == selectedStatus)
         }
         
     }
@@ -34,11 +39,11 @@ struct FavoritesView: View {
         NavigationStack{
             ScrollView {
                 HStack{
-                    if(selecttedGenre != nil){
-                        Text("Genre: \(selecttedGenre!.rawValue)")
+                    if(selectedGenre != nil){
+                        Text("Genre: \(selectedGenre!.rawValue)")
                     }
-                    if(selecttedGenre != nil){
-                        Text("Status: \(selecttedStatus!.rawValue)")
+                    if(selectedGenre != nil){
+                        Text("Status: \(selectedStatus!.rawValue)")
                     }
                     LazyVGrid(columns: gridLayout) {
                         ForEach(favoriteBooks, id: \.id) { book in
@@ -59,12 +64,22 @@ struct FavoritesView: View {
                     }
                 }
                 .sheet(isPresented: $isFilterSheetPresented){
-                    FilterView(selecttedGenre: $selecttedGenre, selecttedStatus: $selecttedStatus)
+                    FilterView(selectedGenre: $selectedGenre, selectedStatus: $selectedStatus)
                 }
             }
             
         }
     }
     
+
+                
+        
     
+}
+func filterFavoriteBooks(books: [PersistentBook], selectedGenre: Genre? = nil, selectedStatus: ReadingStatus? = nil) -> [PersistentBook] {
+    return books.filter { book in
+        book.isFavorite
+        && (selectedGenre == nil || book.genre == selectedGenre)
+        && (selectedStatus == nil || book.status == selectedStatus)
+    }
 }

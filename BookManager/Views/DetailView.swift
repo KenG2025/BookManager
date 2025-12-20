@@ -9,7 +9,7 @@ import SwiftUI
 
 struct DetailView: View {
     
-    @Binding var book: Book
+    var book: PersistentBook
     @State var showEditBookSheet: Bool = false
     
     
@@ -18,10 +18,10 @@ struct DetailView: View {
             ScrollView{
                 VStack(alignment: .leading){
                     HStack{
-                        Image(book.coverImage)
-                            .resizable()
-                            .frame(width: 100, height: 150)
-                            .padding(.vertical,20)
+//                        Image(book.coverImage)
+//                            .resizable()
+//                            .frame(width: 100, height: 150)
+//                            .padding(.vertical,20)
                         VStack{
                             Text(book.title)
                                 .font(.largeTitle)
@@ -44,9 +44,9 @@ struct DetailView: View {
                             
                             Spacer()
                             
-                            FavoritesToggle(isFavorite: $book.isFavoritee)
+                            //FavoritesToggle(isFavorite: $isFavorite)
                         }
-                        Text(book.detail)
+                        Text(book.summary)
                             .padding(.horizontal, 20)
                         if (book.rating == 0) {
                             Text("Not yet rated.")
@@ -59,7 +59,7 @@ struct DetailView: View {
                     .navigationBarItems(trailing: Button("Edit"){
                         showEditBookSheet.toggle()})
                     .sheet(isPresented: $showEditBookSheet){
-                        AddEditView(bookToEdit: $book)
+                       AddEditView(book: book)
                     }
                     
                 }//END VStack

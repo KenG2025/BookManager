@@ -12,7 +12,6 @@ import SwiftData
 
 struct ContentView: View {
     
-    @State var books = getBooks()
     
     @AppStorage("SETTINGS_THEME") private var selectedTheme: Theme = .light
     @AppStorage(SETTINGS_GRID_COLUMNS) private var gridColumns: Int = 2
@@ -33,14 +32,14 @@ struct ContentView: View {
     
     var body: some View {
         TabView{
-            BookListView(books: $books)
+            BookListView()
                 .tabItem{
                     Label("Books", systemImage: "books.vertical.fill")
                 }
-            FavoritesView(books: $books)
-                .tabItem{
-                    Label("Favorites", systemImage: "heart.fill")
-                }
+//            FavoritesView(books: $books)
+//                .tabItem{
+//                    Label("Favorites", systemImage: "heart.fill")
+//                }
             Settings()
                 .tabItem {
                     Label("Settings", systemImage: "gearshape")

@@ -8,15 +8,15 @@
 import SwiftUI
 
 struct BookListItem: View {
-    @Binding var book: Book
+    let book: PersistentBook
    
     
     var body: some View {
         HStack{
-            Image(book.coverImage)
-                .resizable()
-                .scaledToFit()
-                .frame(maxWidth: 60, maxHeight: 48)
+//            Image(book.coverImage)
+//                .resizable()
+//                .scaledToFit()
+//                .frame(maxWidth: 60, maxHeight: 48)
             VStack(alignment: .leading){ //internatiolnalization <-- i18n
                 //LTR <> RTL
                 Text(book.title)

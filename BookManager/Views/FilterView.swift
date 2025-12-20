@@ -9,20 +9,20 @@ import SwiftUI
 
 struct FilterView: View {
     
-    @Binding var selecttedGenre: Genre?
-    @Binding var selecttedStatus: ReadingStatus?
+    @Binding var selectedGenre: Genre?
+    @Binding var selectedStatus: ReadingStatus?
     @State var workingSelectedStatus: ReadingStatus?
     @State var workingSelectedGenre: Genre?
 
     @Environment(\.dismiss) var dismiss
     
 
-    init(selecttedGenre: Binding<Genre?>, selecttedStatus: Binding<ReadingStatus?>){
-        self._selecttedGenre = selecttedGenre
-        self._workingSelectedGenre = .init(initialValue: selecttedGenre.wrappedValue)
+    init(selectedGenre: Binding<Genre?>, selectedStatus: Binding<ReadingStatus?>){
+        self._selectedGenre = selectedGenre
+        self._workingSelectedGenre = .init(initialValue: selectedGenre.wrappedValue)
         
-        self._selecttedStatus = selecttedStatus
-        self._workingSelectedStatus = .init(initialValue: selecttedStatus.wrappedValue)
+        self._selectedStatus = selectedStatus
+        self._workingSelectedStatus = .init(initialValue: selectedStatus.wrappedValue)
     }
     
     
@@ -30,7 +30,7 @@ struct FilterView: View {
         NavigationStack{
             Form{
                 Section(header:Text("Filter by genre")){
-                    Picker("Genre", selection: $selecttedGenre){
+                    Picker("Genre", selection: $selectedGenre){
                         Text("Select a genre...").tag(nil as Genre?)
                         ForEach(Genre.allCases, id:\.self) {
                             genre in Text(genre.rawValue).tag(genre)
@@ -39,7 +39,7 @@ struct FilterView: View {
                 }
                 
                 Section(header:Text("Filter by status")){
-                    Picker("Status", selection: $selecttedStatus){
+                    Picker("Status", selection: $selectedStatus){
                         Text("Select a status...").tag(nil as ReadingStatus?)
                         ForEach(ReadingStatus.allCases, id:\.self) {
                             status in Text(status.rawValue).tag(status)
@@ -51,15 +51,15 @@ struct FilterView: View {
             .toolbar{
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Apply"){
-                        selecttedGenre = workingSelectedGenre
-                        selecttedStatus = workingSelectedStatus
+                        selectedGenre = workingSelectedGenre
+                        selectedStatus = workingSelectedStatus
                         dismiss()
                     }
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Clear"){
-                        selecttedGenre = nil
-                        selecttedStatus = nil
+                        selectedGenre = nil
+                        selectedStatus = nil
                         dismiss()
                     }
                 }

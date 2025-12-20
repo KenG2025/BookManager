@@ -3,6 +3,7 @@ import Foundation
 
 enum Genre: String, CaseIterable, Codable, Sendable {
     case unknown
+    case classic
     case fiction
     case nonFiction
     case fantasy
