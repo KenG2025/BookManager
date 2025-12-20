@@ -38,5 +38,3 @@ class AddEditViewUITests: XCTestCase {
         
     }
 }
-
-
